@@ -3,43 +3,29 @@ name: Deploy Astro to GitHub Pages
 on:
   push:
     branches:
-      - main        # Branch chính của bạn
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+      - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout code
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 3. Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # 4. Build Astro site
-      - name: Build Astro site
+      - name: Build site
         run: npm run build
 
-      # 5. Add .nojekyll to dist
-      - name: Add .nojekyll
-        run: touch dist/.nojekyll
-
-      # 6. Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
-        with:
-          # Path tới thư mục build của Astro
-          deploy_dir: dist
+      - name: Deploy to gh-pages
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f dist
+          git commit -m "Deploy from GitHub Actions"
+          git push -f origin `git subtree split --prefix dist main`:gh-page
