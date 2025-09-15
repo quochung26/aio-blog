@@ -3,7 +3,7 @@ name: Deploy Astro to GitHub Pages
 on:
   push:
     branches:
-      - main        # Branch chính của bạn
+      - main
   workflow_dispatch:
 
 permissions:
@@ -37,16 +37,10 @@ jobs:
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 
-      # 6. Configure git with token
-      - name: Setup git for GitHub Actions
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/quochung26/aio-blog.git
-
-      # 7. Deploy dist/ to gh-pages
-      - name: Deploy to gh-pages
-        run: |
-          git add -f dist
-          git commit -m "Deploy Astro site from GitHub Actions" || echo "No changes to commit"
-          git push -f origin `git subtree split --prefix dist main`:gh-pages
+      # 6. Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
