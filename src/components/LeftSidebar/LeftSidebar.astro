@@ -1,17 +1,14 @@
 ---
-import { getLanguageFromURL } from '../../languages'
-import { SIDEBAR } from '../../consts'
+import { SIDEBAR } from "../../consts";
 
 type Props = {
-  currentPage: string
-}
-
-const { currentPage } = Astro.props
-const currentPageMatch = currentPage.endsWith('/')
+  currentPage: string;
+};
+const { currentPage } = Astro.props;
+const currentPageMatch = currentPage.endsWith("/")
   ? currentPage.slice(1, -1)
-  : currentPage.slice(1)
-const langCode = getLanguageFromURL(currentPage)
-const sidebar = SIDEBAR[langCode]
+  : currentPage.slice(1);
+const sidebar = SIDEBAR;
 ---
 
 <nav aria-labelledby="grid-left">
@@ -23,19 +20,20 @@ const sidebar = SIDEBAR[langCode]
             <h2>{header}</h2>
             <ul>
               {children.map((child) => {
-                const url = Astro.site?.pathname + child.link
+                const url = Astro.site?.pathname + child.link;
+                console.log(child);
                 return (
                   <li class="nav-link">
                     <a
                       href={url}
                       aria-current={
-                        currentPageMatch === child.link ? 'page' : false
+                        currentPageMatch === child.link ? "page" : false
                       }
                     >
                       {child.text}
                     </a>
                   </li>
-                )
+                );
               })}
             </ul>
           </div>
@@ -46,12 +44,12 @@ const sidebar = SIDEBAR[langCode]
 </nav>
 
 <script is:inline>
-  window.addEventListener('DOMContentLoaded', () => {
-    var target = document.querySelector('[aria-current="page"]')
+  window.addEventListener("DOMContentLoaded", () => {
+    var target = document.querySelector('[aria-current="page"]');
     if (target && target.offsetTop > window.innerHeight - 100) {
-      document.querySelector('.nav-groups').scrollTop = target.offsetTop
+      document.querySelector(".nav-groups").scrollTop = target.offsetTop;
     }
-  })
+  });
 </script>
 
 <style>
@@ -102,7 +100,7 @@ const sidebar = SIDEBAR[langCode]
     background-color: var(--theme-bg-hover);
   }
 
-  .nav-link a[aria-current='page'] {
+  .nav-link a[aria-current="page"] {
     color: var(--theme-text-accent);
     background-color: var(--theme-bg-accent);
     font-weight: 600;
@@ -116,7 +114,7 @@ const sidebar = SIDEBAR[langCode]
 </style>
 
 <style is:global>
-  :root.theme-dark .nav-link a[aria-current='page'] {
+  :root.theme-dark .nav-link a[aria-current="page"] {
     color: hsla(var(--color-base-white), 100%, 1);
   }
 </style>
